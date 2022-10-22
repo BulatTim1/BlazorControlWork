@@ -1,0 +1,28 @@
+﻿@using UserAuthBlazorApp.Data
+@if (Users == null)
+{
+	<div>
+		Need be authorized to see online users.
+	</div>
+}
+else
+{
+	<div>Online users:
+		@foreach (var user in Users)
+		{
+			@if (user != Users.Last())
+			{
+				<span>@user.Lastname @user.Name, </span>
+			}
+			else
+			{
+				<span>@user.Lastname @user.Name</span>
+			}
+		}
+	</div>
+}
+
+@code {
+	[Parameter]
+	public List<BaseUser> Users { get; set; } = new List<BaseUser>();
+}

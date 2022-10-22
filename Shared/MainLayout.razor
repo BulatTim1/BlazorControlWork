@@ -1,0 +1,42 @@
+﻿@inherits LayoutComponentBase
+@inject UsersService usersService
+<PageTitle>UserAuthBlazorApp</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            @if (!usersService.IsAuthorizated)
+            {
+                <NavLink class="nav-link" href="signin">
+                    <span aria-hidden="true">Sign in</span>
+                </NavLink>
+                <NavLink class="nav-link" href="signup">
+                    <span aria-hidden="true">Sign up</span>
+                </NavLink>
+            } else {
+				@try
+				{
+                    <NavLink class="nav-link" href="profile">
+                        <span aria-hidden="true">@usersService.CurrentUser.Name @usersService.CurrentUser.Lastname</span>
+                    </NavLink>
+                } catch 
+				{
+                    <NavLink class="nav-link" href="signin">
+                        <span aria-hidden="true">Sign in</span>
+                    </NavLink>
+                    <NavLink class="nav-link" href="signup">
+                        <span aria-hidden="true">Sign up</span>
+                    </NavLink>
+                }
+            }
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>

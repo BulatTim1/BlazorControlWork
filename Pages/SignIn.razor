@@ -1,0 +1,48 @@
+﻿@page "/SignIn"
+@using Microsoft.AspNetCore.Mvc
+@inject UsersService usersService
+@inject NavigationManager navigationManager
+
+<PageTitle>Sign In</PageTitle>
+
+<form @onsubmit=SignInSubmit>
+	@if (error != "")
+	{
+		<div class="alert alert-danger" role="alert">
+			@error
+		</div>
+	}
+	<div class="form-group">
+		<label for="login">Login</label>
+		<input type="text" @bind=login class="form-control" id="login" placeholder="Enter login">
+	</div>
+	<div class="form-group">
+		<label for="password">Password</label>
+		<input type="password" @bind=password class="form-control" id="password" placeholder="Enter password ">
+	</div>
+	<input type="submit" class="btn btn-primary" placeholder="Sign In" />
+</form>
+
+@code {
+	string login = "";
+	string password = "";
+	string error = "";
+
+	private void SignInSubmit()
+	{
+		login = login.Trim();
+		password = password.Trim();
+		if (login == "" || password == "")
+		{
+			error = "Login or password can't be empty.";
+		}
+		else if (!usersService.Authorization(login, password))
+		{
+			error = "This user doesn't exists or login with password is wrong.";
+		} 
+		else 
+		{
+			navigationManager.NavigateTo("/", true);
+		}
+	}
+}

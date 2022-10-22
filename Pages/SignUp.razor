@@ -1,0 +1,76 @@
+﻿@page "/SignUp"
+@using Microsoft.AspNetCore.Mvc
+@inject UsersService usersService
+@inject NavigationManager navigationManager
+
+<PageTitle>Sign Up</PageTitle>
+
+<form @onsubmit=SignUpSubmit>
+	@if (error != "")
+	{
+		<div class="alert alert-danger" role="alert">
+			@error
+		</div>
+	}
+	<div class="form-group">
+		<label for="login">Login</label>
+		<input type="text" @bind=login class="form-control" id="login" placeholder="Enter login">
+	</div>
+	<div class="form-group">
+		<label for="email">Email</label>
+		<input type="email" @bind=email class="form-control" id="email" placeholder="Enter email">
+	</div>
+	<div class="form-group">
+		<label for="password">Password</label>
+		<input type="password" @bind=password class="form-control" id="password" placeholder="Enter password ">
+	</div>
+	<div class="form-group">
+		<label for="repassword">Re-password</label>
+		<input type="password" @bind=repassword class="form-control" id="repassword" placeholder="Enter password again">
+	</div>
+	<div class="form-group">
+		<label for="name">First name</label>
+		<input type="text" @bind=name class="form-control" id="name" placeholder="Enter name">
+	</div>
+	<div class="form-group">
+		<label for="lastname">Last name</label>
+		<input type="lastname" @bind=lastname class="form-control" id="lastname" placeholder="Enter lastname">
+	</div>
+	<input type="submit" class="btn btn-primary" placeholder="Sign Up" />
+</form>
+
+@code {
+	string login = "";
+	string password = "";
+	string repassword = "";
+	string email = "";
+	string name = "";
+	string lastname = "";
+	string error = "";
+
+	private void SignUpSubmit()
+	{
+		login = login.Trim();
+		password = password.Trim();
+		repassword = repassword.Trim();
+		email = email.Trim();
+		name = name.Trim();
+		lastname = lastname.Trim();
+		if (login == "" || password == "" || repassword == "" || email == "" || name == "" || lastname == "")
+		{
+			error = "All fields must be filled.";
+		}
+		else if (password != repassword)
+		{
+			error = "Passwords don't match.";
+		}
+		else if (!usersService.Registration(login, password, email, name, lastname))
+		{
+			error = "This login or email already exists.";
+		}
+		else
+		{
+			navigationManager.NavigateTo("/", true);
+		}
+	}
+}

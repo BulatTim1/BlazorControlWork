@@ -1,0 +1,48 @@
+﻿@page "/profile"
+@using UserAuthBlazorApp.Data
+@inject UsersService usersService
+@inject NavigationManager navManager
+
+<PageTitle>Profile</PageTitle>
+
+@if (usersService.IsAuthorizated)
+{
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title">@usersService.CurrentUser.Name @usersService.CurrentUser.Lastname</h5>
+			<h6 class="card-subtitle mb-2 text-muted">@usersService.CurrentUser.Login</h6>
+			<p class="card-text">@usersService.CurrentUser.Email</p>
+			<NavLink class="nav-link" href="logout">
+				<span class="btn btn-primary" aria-hidden="true">Log out</span>
+			</NavLink>
+		</div>
+	</div>
+}
+else
+{
+	<div class="alert alert-danger" role="alert">
+		You are not authorized.
+	</div>
+}
+
+@code {
+	string login;
+	string email;
+	string name;
+	string lastname;
+
+	protected override void OnInitialized()
+	{
+		if (usersService.IsAuthorizated)
+		{
+			login = usersService.CurrentUser.Login;
+			email = usersService.CurrentUser.Email;
+			name = usersService.CurrentUser.Name;
+			lastname = usersService.CurrentUser.Lastname;
+		}
+		else
+		{
+			navManager.NavigateTo("/", true);
+		}
+	}
+}

@@ -1,0 +1,19 @@
+﻿@page "/"
+@using UserAuthBlazorApp.Data
+@inject UsersService usersService
+
+<PageTitle>Index</PageTitle>
+
+
+
+<UsersOnline Users=users />
+
+@code {
+	List<BaseUser>? users;
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		users = usersService.GetAllOnlineUsers();
+    }
+}
