@@ -1,0 +1,40 @@
+﻿@page "/avatars-upload"
+@inject FileSystemService fsService
+
+<h3>Upload Files</h3>
+
+<p>
+    <div class="custom-file" style="overflow: hidden; white-space: nowrap;" id="customFile">
+        <InputFile OnChange="OnInputFileChange"  class="custom-file-input" id="exampleInputFile" aria-describedby="fileHelp"></InputFile>
+    </div>
+</p>
+
+
+<ImagesTable FileNames=fileNames />
+
+@code {
+
+    IBrowserFile file;
+    string[] fileNames;
+
+    public async void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+        string[] tempExt = file.Name.ToLower().Split('.');
+        string ext = tempExt[tempExt.Length - 1];
+        string name = Path.GetRandomFileName() + '.' + ext;
+        if (file.ContentType.StartsWith("image/") && new string[] { "png", "jpg", "jpeg", "svg", "webp" }.Contains(ext))
+        {
+            await fsService.UploadImageToDbAsync(name, file.OpenReadStream(4096000000));
+        }
+
+        fileNames = fsService.GetAllNames();
+        this.StateHasChanged();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        fileNames = fsService.GetAllNames();
+        return base.OnInitializedAsync();
+    }
+} 

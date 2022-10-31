@@ -1,0 +1,44 @@
+﻿@using UserAuthBlazorApp.Data
+@inject FileSystemService fsService
+
+<img src=@filePath alt=@fileName style="object-fit: cover; max-width: 100%;" />
+
+@if (FileNames != null)
+{
+    <table>
+        @foreach (string name in FileNames)
+        {
+            <tr>
+                <td>Name: @name</td>
+                <td>
+                    <button class="btn btn-primary" @onclick="@(e => GetImage(name))">Get image</button>
+                </td>
+                <td>
+                    <button class="btn btn-primary" @onclick="@(e => DeleteImage(name))">Delete image</button>
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@code {
+    [Parameter]
+    public string[] FileNames { get; set; } = new string[] { };
+
+    string filePath = "";
+    string fileName = "";
+
+    private void GetImage(string name)
+    {
+        fsService.DownloadToLocal(name);
+        filePath = @"images\" + name;
+    }
+
+    private void DeleteImage(string name)
+    {
+        fsService.DeleteImage(name);
+        FileNames = fsService.GetAllNames();
+        File.Delete("./wwwroot/images/" + name);
+        this.StateHasChanged();
+    }
+}
